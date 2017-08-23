@@ -73,18 +73,67 @@ compGrid[6][4] = "s";
 compGrid[8][8] = "d";
 compGrid[8][9] = "d";
 
+let message = "";
+
+let playerShips = {
+	carrier: 5,
+	battleship: 4,
+	cruiser: 3,
+	submarine: 3,
+	destroyer: 2
+}
+
+let compShips = {
+	carrier: 5,
+	battleship: 4,
+	cruiser: 3,
+	submarine: 3,
+	destroyer: 2
+}
 function playerGuess(x,y) {
-	if (compGrid[x][y] === "e")
-		playerGuesses[x][y] = "m"; //miss
-	else
-		playerGuesses[x][y] = "h"; //  hit
+	if (compGrid[x][y] === "e") {
+		playerGuesses[x][y] = "m";
+		return "m"; //miss
+	}
+	else {
+		if (compGrid[x][y] === "c"){
+			playerShips.carrier--;
+			if (playerShips.carrier === 0)
+				message = "You sunk my carrier";
+		}
+		else if (compGrid[x][y] === "b"){
+			playerShips.battleship--;
+			if (playerShips.battleship === 0)
+				message = "You sunk my battleship";
+		}
+		else if (compGrid[x][y] === "k"){
+			playerShips.cruiser--;
+			if (playerShips.cruiser === 0)
+				message = "You sunk my cruiser";
+		}
+		else if (compGrid[x][y] === "s"){
+			playerShips.submarine--;
+			if (playerShips.submarine === 0)
+				message = "You sunk my submarine";
+		}
+		else if (compGrid[x][y] === "d"){
+			playerShips.destroyer--;
+			if (playerShips.destroyer === 0)
+				message = "You sunk my destroyer";
+		}
+		compGrid[x][y] = "h";
+		return "h"; //  hit
+	}
 }
 
 function compGuess(x,y) {
-	if (playerGrid[x][y] === "e")
-		compGuesses[x][y] = "m"; // miss
+	if (playerGrid[x][y] === "e") {
+		compGuesses[x][y] = "m";
+		return "m"; // miss
+	}
 	else
-		compGuesses[x][y] = "h"; // hit
+		compGuesses[x][y] = "h";
+		return "h"; // hit
 }
 
 function printPlayerGuesses() {
@@ -136,7 +185,9 @@ $(document).ready(function() {
 	for (let i = 0; i < 10; i++) {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
-			str+='<div class="col col-1">'+playerGuesses[i][j]+'</div>';
+			str+='<div class="col col-1" id="g'+i+j+'">'
+			+playerGuesses[i][j]
+			+'</div>';
 		}
 		str+='</div>';
 	}
@@ -145,7 +196,9 @@ $(document).ready(function() {
 	for (let i = 0; i < 10; i++) {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
-			str+='<div class="col col-1">'+playerGrid[i][j]+'</div>';
+			str+='<div class="col col-1" id="s'+i+j+'">'
+			+playerGrid[i][j]
+			+'</div>';
 		}
 		str+='</div>';
 	}
@@ -154,5 +207,16 @@ $(document).ready(function() {
 	$('#guesses').click(function (event) {
 		console.log(this);
     	console.log(event.target);
-	})
+    	console.log(event.target.id[1]);
+    	if (playerGuesses[event.target.id[1]][event.target.id[2]] === "e"){
+	    	let result = playerGuess(event.target.id[1], event.target.id[2]);
+	    	$(event.target).text(result);
+	    	$(event.target).addClass(result);
+	    	let compGuessX = Math.floor(Math.random()*10);
+	    	let compGuessY = Math.floor(Math.random()*10);
+	    	result = compGuess(compGuessX,compGuessY);
+	    	$('#s'+compGuessX+compGuessY).addClass(result);
+	    	$('#message').text(message);
+    	}
+	});
 });
