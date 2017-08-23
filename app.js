@@ -29,27 +29,27 @@ for (let i = 0; i < 10; i++) {
 // Place ships in playerGrid and compGrid here
 //
 //
-playerGrid[0][1] = "c";
-playerGrid[0][2] = "c";
-playerGrid[0][3] = "c";
-playerGrid[0][4] = "c";
-playerGrid[0][5] = "c";
+// playerGrid[0][1] = "c";
+// playerGrid[0][2] = "c";
+// playerGrid[0][3] = "c";
+// playerGrid[0][4] = "c";
+// playerGrid[0][5] = "c";
 
-playerGrid[3][0] = "b";
-playerGrid[4][0] = "b";
-playerGrid[5][0] = "b";
-playerGrid[6][0] = "b";
+// playerGrid[3][0] = "b";
+// playerGrid[4][0] = "b";
+// playerGrid[5][0] = "b";
+// playerGrid[6][0] = "b";
 
-playerGrid[3][8] = "k";
-playerGrid[4][8] = "k";
-playerGrid[5][8] = "k";
+// playerGrid[3][8] = "k";
+// playerGrid[4][8] = "k";
+// playerGrid[5][8] = "k";
 
-playerGrid[6][2] = "s";
-playerGrid[6][3] = "s";
-playerGrid[6][4] = "s";
+// playerGrid[6][2] = "s";
+// playerGrid[6][3] = "s";
+// playerGrid[6][4] = "s";
 
-playerGrid[8][8] = "d";
-playerGrid[8][9] = "d";
+// playerGrid[8][8] = "d";
+// playerGrid[8][9] = "d";
 
 compGrid[0][1] = "c";
 compGrid[0][2] = "c";
@@ -90,6 +90,26 @@ let compShips = {
 	submarine: 3,
 	destroyer: 2
 }
+
+function placeShip(x,y,length,horizontal,ship) {
+	if (!horizontal) {
+		for (let i = 0; i < length; i++)
+			if (playerGrid[x+i][y] !== "e"
+				|| x+i > 9)
+				return false;
+		for (let i = 0; i < length; i++)
+			playerGrid[x+i][y] = ship;
+	}
+	else {
+		for (let i = 0; i < length; i++)
+			if (playerGrid[x][y+i] !== "e"
+				|| y+i > 9)
+				return false;
+		for (let i = 0; i < length; i++)
+			playerGrid[x][y+i] = ship;
+	}
+	return true;
+}
 function playerGuess(x,y) {
 	if (compGrid[x][y] === "e") {
 		playerGuesses[x][y] = "m";
@@ -97,30 +117,36 @@ function playerGuess(x,y) {
 	}
 	else {
 		if (compGrid[x][y] === "c"){
-			playerShips.carrier--;
-			if (playerShips.carrier === 0)
+			compShips.carrier--;
+			if (compShips.carrier === 0)
 				message = "You sunk my carrier";
 		}
 		else if (compGrid[x][y] === "b"){
-			playerShips.battleship--;
-			if (playerShips.battleship === 0)
+			compShips.battleship--;
+			if (compShips.battleship === 0)
 				message = "You sunk my battleship";
 		}
 		else if (compGrid[x][y] === "k"){
-			playerShips.cruiser--;
-			if (playerShips.cruiser === 0)
+			compShips.cruiser--;
+			if (compShips.cruiser === 0)
 				message = "You sunk my cruiser";
 		}
 		else if (compGrid[x][y] === "s"){
-			playerShips.submarine--;
-			if (playerShips.submarine === 0)
+			compShips.submarine--;
+			if (compShips.submarine === 0)
 				message = "You sunk my submarine";
 		}
 		else if (compGrid[x][y] === "d"){
-			playerShips.destroyer--;
-			if (playerShips.destroyer === 0)
+			compShips.destroyer--;
+			if (compShips.destroyer === 0)
 				message = "You sunk my destroyer";
 		}
+		if (compShips.carrier === 0 &&
+			compShips.battleship === 0 &&
+			compShips.cruiser === 0 &&
+			compShips.submarine === 0 &&
+			compShips.destroyer === 0)
+			message = "YOU WIN!"
 		compGrid[x][y] = "h";
 		return "h"; //  hit
 	}
@@ -181,6 +207,12 @@ function printCompGrid() {
 }
 
 $(document).ready(function() {
+
+	placeShip(0,1,5,true,'c');
+	placeShip(3,0,4,false,'b');
+	placeShip(3,8,3,false,'k');
+	placeShip(6,2,3,true,'s');
+	placeShip(8,8,2,true,'d');
 	str = ""
 	for (let i = 0; i < 10; i++) {
 		str+='<div class="row">';
@@ -203,6 +235,8 @@ $(document).ready(function() {
 		str+='</div>';
 	}
 	$('#ships').append(str);
+
+	let shipsAreSet = false;
 
 	$('#guesses').click(function (event) {
 		console.log(this);
