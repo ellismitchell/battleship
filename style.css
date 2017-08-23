@@ -5,8 +5,29 @@
 
 .h {
 	background-color: red;
+	border: 4px solid red;
 }
 
 .m {
 	background-color: yellow;
+}
+
+.c {
+	background-color: darkblue;
+}
+
+.b {
+	background-color: blue;
+}
+
+.k {
+	background-color: lightblue;
+}
+
+.s {
+	background-color: navy;
+}
+
+.d {
+	background-color: cornflowerblue;
 }
