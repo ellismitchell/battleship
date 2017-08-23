@@ -27,53 +27,51 @@ for (let i = 0; i < 10; i++) {
 }
 
 // Place ships in playerGrid and compGrid here
-//
-//
-// playerGrid[0][1] = "c";
-// playerGrid[0][2] = "c";
-// playerGrid[0][3] = "c";
-// playerGrid[0][4] = "c";
-// playerGrid[0][5] = "c";
 
-// playerGrid[3][0] = "b";
-// playerGrid[4][0] = "b";
-// playerGrid[5][0] = "b";
-// playerGrid[6][0] = "b";
+while(!compPlaceShip(Math.floor(Math.random()*10),
+	Math.floor(Math.random()*10),
+	5,Math.random() >= 0.5,'c')) {}
+while(!compPlaceShip(Math.floor(Math.random()*10),
+	Math.floor(Math.random()*10),
+	4,Math.random() >= 0.5,'b')) {}
+while(!compPlaceShip(Math.floor(Math.random()*10),
+	Math.floor(Math.random()*10),
+	3,Math.random() >= 0.5,'k')) {}
+while(!compPlaceShip(Math.floor(Math.random()*10),
+	Math.floor(Math.random()*10),
+	3,Math.random() >= 0.5,'s')) {}
+while(!compPlaceShip(Math.floor(Math.random()*10),
+	Math.floor(Math.random()*10),
+	2,Math.random() >= 0.5,'d')) {}
 
-// playerGrid[3][8] = "k";
-// playerGrid[4][8] = "k";
-// playerGrid[5][8] = "k";
 
-// playerGrid[6][2] = "s";
-// playerGrid[6][3] = "s";
-// playerGrid[6][4] = "s";
 
-// playerGrid[8][8] = "d";
-// playerGrid[8][9] = "d";
+// compGrid[0][1] = "c";
+// compGrid[0][2] = "c";
+// compGrid[0][3] = "c";
+// compGrid[0][4] = "c";
+// compGrid[0][5] = "c";
 
-compGrid[0][1] = "c";
-compGrid[0][2] = "c";
-compGrid[0][3] = "c";
-compGrid[0][4] = "c";
-compGrid[0][5] = "c";
+// compGrid[3][0] = "b";
+// compGrid[4][0] = "b";
+// compGrid[5][0] = "b";
+// compGrid[6][0] = "b";
 
-compGrid[3][0] = "b";
-compGrid[4][0] = "b";
-compGrid[5][0] = "b";
-compGrid[6][0] = "b";
+// compGrid[3][8] = "k";
+// compGrid[4][8] = "k";
+// compGrid[5][8] = "k";
 
-compGrid[3][8] = "k";
-compGrid[4][8] = "k";
-compGrid[5][8] = "k";
+// compGrid[6][2] = "s";
+// compGrid[6][3] = "s";
+// compGrid[6][4] = "s";
 
-compGrid[6][2] = "s";
-compGrid[6][3] = "s";
-compGrid[6][4] = "s";
+// compGrid[8][8] = "d";
+// compGrid[8][9] = "d";
 
-compGrid[8][8] = "d";
-compGrid[8][9] = "d";
+printCompGrid();
 
 let message = "";
+let gameOver = false;
 
 let playerShips = {
 	carrier: 5,
@@ -114,6 +112,32 @@ function placeShip(x,y,length,horizontal,ship) {
 	}
 	return true;
 }
+
+function compPlaceShip(x,y,length,horizontal,ship) {
+	console.log(x,y);
+	if (!horizontal) {
+		for (let i = 0; i < length; i++){
+			if (x+i> 9 || compGrid[x+i][y] !== "e")
+				return false;
+			console.log("test");
+		}
+		for (let i = 0; i < length; i++)
+			compGrid[x+i][y] = ship;
+	}
+	else {
+		for (let i = 0; i < length; i++){
+
+			console.log("test", (y+i));
+			if (y+i >9 || compGrid[x][y+i] !== "e")
+				return false;
+		}
+		for (let i = 0; i < length; i++)
+			compGrid[x][y+i] = ship;
+	}
+	return true;
+}
+
+
 function playerGuess(x,y) {
 	if (compGrid[x][y] === "e") {
 		playerGuesses[x][y] = "m";
@@ -149,8 +173,10 @@ function playerGuess(x,y) {
 			compShips.battleship === 0 &&
 			compShips.cruiser === 0 &&
 			compShips.submarine === 0 &&
-			compShips.destroyer === 0)
-			message += '<br>YOU WIN!'
+			compShips.destroyer === 0) {
+			message += '<br>YOU WIN!';
+			gameOver = true;
+	}
 		playerGuesses[x][y] = 'h';
 		return 'h'; //  hit
 	}
@@ -211,13 +237,7 @@ function printCompGrid() {
 }
 
 $(document).ready(function() {
-	// printPlayerGrid();
-	// placeShip(0,1,5,true,'c');
-	// placeShip(3,0,4,false,'b');
-	// placeShip(3,8,3,false,'k');
-	// placeShip(6,2,3,true,'s');
-	// placeShip(8,8,2,true,'d');
-	// printPlayerGrid();
+	
 
 	let shipsAreSet = false;
 	let horizontal = true;
@@ -258,11 +278,19 @@ $(document).ready(function() {
 	}
 	$('#setup').append(str);
 	if(!shipsAreSet){
+		$(window).on("keypress",function(event) {
+			if (event.which == 32)
+				horizontal = !horizontal;
+		});
 	$('.col').hover(function(event){
 		let square = $(event.target);
 		for (let i = 0; i < ship.length; i++){
 			square.addClass(ship.letter);
-			square = square.next();
+			if (horizontal)
+				square = square.next();
+			else {
+
+			}
 		}
 
 	},function(event){
