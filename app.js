@@ -276,16 +276,13 @@ $(document).ready(function() {
 	$('.col').click(function(event){
 				let square = event.target;
 			if (placeShip(parseInt(square.id[1]),parseInt(square.id[2]),ship.length,horizontal,ship.letter)){
-		// 	// 	square = $(event.target);
-		// 	// 		for (let i = 0; i < ship.length; i++){
-		// 	// square.addClass(ship.letter);
-		// 	// square = square.next();
-		// }
+		
 			
 				if (shipsCounter >= 4) {
 					shipsAreSet = true;
 					printPlayerGrid();
 					ship.letter='x'; // hacky fix
+					playGame();
 				}
 				else {
 						shipsCounter++;
@@ -294,13 +291,14 @@ $(document).ready(function() {
 			}
 	});}
 
-
-	str=""
+	function playGame() {
+	$('#setup').hide();
+	let str=""
 	for (let i = 0; i < 10; i++) {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
 			str+='<div class="col col-1" id="g'+i+j+'">'
-			+playerGuesses[i][j]
+			// +playerGuesses[i][j]
 			+'</div>';
 		}
 		str+='</div>';
@@ -311,7 +309,7 @@ $(document).ready(function() {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
 			str+='<div class="col col-1 '+playerGrid[i][j]+'" id="s'+i+j+'">'
-			+playerGrid[i][j]
+			// +playerGrid[i][j]
 			+'</div>';
 		}
 		str+='</div>';
@@ -325,7 +323,7 @@ $(document).ready(function() {
     	console.log(event.target.id[1]);
     	if (playerGuesses[event.target.id[1]][event.target.id[2]] === "e"){
 	    	let result = playerGuess(event.target.id[1], event.target.id[2]);
-	    	$(event.target).text(result);
+	    	// $(event.target).text(result);
 	    	$(event.target).addClass(result);
 	    	let compGuessX = Math.floor(Math.random()*10);
 	    	let compGuessY = Math.floor(Math.random()*10);
@@ -334,4 +332,5 @@ $(document).ready(function() {
 	    	$('#message').html(message);
     	}
 	});
+}
 });
