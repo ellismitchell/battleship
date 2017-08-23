@@ -119,36 +119,36 @@ function playerGuess(x,y) {
 		if (compGrid[x][y] === "c"){
 			compShips.carrier--;
 			if (compShips.carrier === 0)
-				message = "You sunk my carrier";
+				message += '<br>You sunk my carrier';
 		}
-		else if (compGrid[x][y] === "b"){
+		else if (compGrid[x][y] === 'b'){
 			compShips.battleship--;
 			if (compShips.battleship === 0)
-				message = "You sunk my battleship";
+				message += '<br>You sunk my battleship';
 		}
-		else if (compGrid[x][y] === "k"){
+		else if (compGrid[x][y] === 'k'){
 			compShips.cruiser--;
 			if (compShips.cruiser === 0)
-				message = "You sunk my cruiser";
+				message += '<br>You sunk my cruiser';
 		}
-		else if (compGrid[x][y] === "s"){
+		else if (compGrid[x][y] === 's'){
 			compShips.submarine--;
 			if (compShips.submarine === 0)
-				message = "You sunk my submarine";
+				message += '<br>You sunk my submarine';
 		}
-		else if (compGrid[x][y] === "d"){
+		else if (compGrid[x][y] === 'd'){
 			compShips.destroyer--;
 			if (compShips.destroyer === 0)
-				message = "You sunk my destroyer";
+				message += '<br>You sunk my destroyer';
 		}
 		if (compShips.carrier === 0 &&
 			compShips.battleship === 0 &&
 			compShips.cruiser === 0 &&
 			compShips.submarine === 0 &&
 			compShips.destroyer === 0)
-			message = "YOU WIN!"
-		compGrid[x][y] = "h";
-		return "h"; //  hit
+			message += '<br>YOU WIN!'
+		playerGuesses[x][y] = 'h';
+		return 'h'; //  hit
 	}
 }
 
@@ -250,7 +250,7 @@ $(document).ready(function() {
 	    	let compGuessY = Math.floor(Math.random()*10);
 	    	result = compGuess(compGuessX,compGuessY);
 	    	$('#s'+compGuessX+compGuessY).addClass(result);
-	    	$('#message').text(message);
+	    	$('#message').html(message);
     	}
 	});
 });
