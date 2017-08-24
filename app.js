@@ -1,4 +1,6 @@
 
+// Initialize 2d arrays
+
 let playerGrid = new Array(10);
 for (let i = 0; i < 10; i++) {
 	playerGrid[i] = new Array(10);
@@ -26,28 +28,25 @@ for (let i = 0; i < 10; i++) {
 	}
 }
 
-// Place ships in playerGrid and compGrid here
+// Place computer's ships randomly
 
 while(!compPlaceShip(Math.floor(Math.random()*10),
 	Math.floor(Math.random()*10),
 	5,Math.random() >= 0.5,'c')) {}
-while(!compPlaceShip(Math.floor(Math.random()*10),
-	Math.floor(Math.random()*10),
-	4,Math.random() >= 0.5,'b')) {}
-while(!compPlaceShip(Math.floor(Math.random()*10),
-	Math.floor(Math.random()*10),
-	3,Math.random() >= 0.5,'k')) {}
-while(!compPlaceShip(Math.floor(Math.random()*10),
-	Math.floor(Math.random()*10),
-	3,Math.random() >= 0.5,'s')) {}
-while(!compPlaceShip(Math.floor(Math.random()*10),
-	Math.floor(Math.random()*10),
-	2,Math.random() >= 0.5,'d')) {}
- 
+	while(!compPlaceShip(Math.floor(Math.random()*10),
+		Math.floor(Math.random()*10),
+		4,Math.random() >= 0.5,'b')) {}
+		while(!compPlaceShip(Math.floor(Math.random()*10),
+			Math.floor(Math.random()*10),
+			3,Math.random() >= 0.5,'k')) {}
+			while(!compPlaceShip(Math.floor(Math.random()*10),
+				Math.floor(Math.random()*10),
+				3,Math.random() >= 0.5,'s')) {}
+				while(!compPlaceShip(Math.floor(Math.random()*10),
+					Math.floor(Math.random()*10),
+					2,Math.random() >= 0.5,'d')) {}
 
-printCompGrid();
-
-let message = "";
+let message = "Place your ships. Use space to rotate";
 let gameOver = false;
 
 let playerShips = {
@@ -67,20 +66,16 @@ let compShips = {
 }
 
 function placeShip(x,y,length,horizontal,ship) {
-	console.log(x,y);
 	if (!horizontal) {
 		for (let i = 0; i < length; i++){
 			if (x+i> 9 || playerGrid[x+i][y] !== "e")
 				return false;
-			console.log("test");
 		}
 		for (let i = 0; i < length; i++)
 			playerGrid[x+i][y] = ship;
 	}
 	else {
 		for (let i = 0; i < length; i++){
-
-			console.log("test", (y+i));
 			if (y+i >9 || playerGrid[x][y+i] !== "e")
 				return false;
 		}
@@ -91,20 +86,16 @@ function placeShip(x,y,length,horizontal,ship) {
 }
 
 function compPlaceShip(x,y,length,horizontal,ship) {
-	console.log(x,y);
 	if (!horizontal) {
 		for (let i = 0; i < length; i++){
 			if (x+i> 9 || compGrid[x+i][y] !== "e")
 				return false;
-			console.log("test");
 		}
 		for (let i = 0; i < length; i++)
 			compGrid[x+i][y] = ship;
 	}
 	else {
 		for (let i = 0; i < length; i++){
-
-			console.log("test", (y+i));
 			if (y+i >9 || compGrid[x][y+i] !== "e")
 				return false;
 		}
@@ -152,9 +143,9 @@ function playerGuess(x,y) {
 			compShips.submarine === 0 &&
 			compShips.destroyer === 0) {
 			message += '<br>YOU WIN!';
-			gameOver = true;
+		gameOver = true;
 	}
-		playerGuesses[x][y] = 'h';
+	playerGuesses[x][y] = 'h';
 		return 'h'; //  hit
 	}
 }
@@ -196,13 +187,14 @@ function compGuess(x,y) {
 			playerShips.submarine === 0 &&
 			playerShips.destroyer === 0) {
 			message += '<br>YOU LOSE!';
-			gameOver = true;
+		gameOver = true;
 	}
-		compGuesses[x][y] = "h";
+	compGuesses[x][y] = "h";
 		return "h"; // hit
 	}
 }
 
+//functions for console testing
 function printPlayerGuesses() {
 	str = "";
 	for (let i = 0; i < 10; i++) {
@@ -248,37 +240,36 @@ function printCompGrid() {
 }
 
 $(document).ready(function() {
-	
-
+	// Player sets up ships
+	$('#message').html(message);
 	let shipsAreSet = false;
 	let horizontal = true;
 	let length = 4;
 	let ships = [
-		{
-			length: 5,
-			letter: 'c'
-		},
-		{
-			length: 4,
-			letter: 'b'
-		},
-		{
-			length: 3,
-			letter: 'k'
-		},
-		{
-			length: 3,
-			letter: 's'
-		},
-		{
-			length: 2,
-			letter: 'd'
-		}
+	{
+		length: 5,
+		letter: 'c'
+	},
+	{
+		length: 4,
+		letter: 'b'
+	},
+	{
+		length: 3,
+		letter: 'k'
+	},
+	{
+		length: 3,
+		letter: 's'
+	},
+	{
+		length: 2,
+		letter: 'd'
+	}
 	]
 	let shipsCounter = 0;
 	let ship = ships[shipsCounter];
-	console.log(ship)
-	str = ""
+	str = "";
 	for (let i = 0; i < 10; i++) {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
@@ -293,92 +284,93 @@ $(document).ready(function() {
 	if(!shipsAreSet){
 		$(window).on("keypress",function(event) {
 			if (event.which == 32) {
+				// erase ship
 				square = recentSquare;
 				for (let i = 0; i < ship.length; i++){
-			square.removeClass(ship.letter);
-			if (horizontal)
-				square = square.next();
-			else {
-				let id = recentSquare2.id;
-				let x = id[1];
-				let y = id[2];
-				square = $('#a'+(parseInt(x)+1+i)+y);
-			}
-		}
+					square.removeClass(ship.letter);
+					if (horizontal)
+						square = square.next();
+					else {
+						let id = recentSquare2.id;
+						let x = id[1];
+						let y = id[2];
+						square = $('#a'+(parseInt(x)+1+i)+y);
+					}
+				}
 				horizontal = !horizontal;
+				// paint ship
 				square = recentSquare;
 				for (let i = 0; i < ship.length; i++){
-			square.addClass(ship.letter);
-			if (horizontal)
-				square = square.next();
-			else {
-				let id = recentSquare2.id;
-				let x = id[1];
-				let y = id[2];
-				square = $('#a'+(parseInt(x)+1+i)+y);
-			}
-		} 
+					square.addClass(ship.letter);
+					if (horizontal)
+						square = square.next();
+					else {
+						let id = recentSquare2.id;
+						let x = id[1];
+						let y = id[2];
+						square = $('#a'+(parseInt(x)+1+i)+y);
+					}
+				} 
 			}
 		});
-	$('.col').hover(paintShip,eraseShip);
+		$('.col').hover(paintShip,eraseShip);
 
-	function paintShip(event){
-		let square = $(event.target);
-		recentSquare = square;
-		recentSquare2 = event.target;
-		for (let i = 0; i < ship.length; i++){
-			square.addClass(ship.letter);
-			if (horizontal)
-				square = square.next();
-			else {
-				let id = event.target.id;
-				let x = id[1];
-				let y = id[2];
-				square = $('#a'+(parseInt(x)+1+i)+y);
-			}
-		}    
+		function paintShip(event){
+			let square = $(event.target);
+			recentSquare = square;
+			recentSquare2 = event.target;
+			for (let i = 0; i < ship.length; i++){
+				square.addClass(ship.letter);
+				if (horizontal)
+					square = square.next();
+				else {
+					let id = event.target.id;
+					let x = id[1];
+					let y = id[2];
+					square = $('#a'+(parseInt(x)+1+i)+y);
+				}
+			}    
 
-	}
-	function eraseShip(event){
-		let square = $(event.target);
-		for (let i = 0; i < ship.length; i++){
-			square.removeClass(ship.letter);
-			if (horizontal)
-				square = square.next();
-			else {
-				let id = event.target.id;
-				let x = id[1];
-				let y = id[2];
-				square = $('#a'+(parseInt(x)+1+i)+y);
-			}
-		}	   
-	}
-	$('.col').click(function(event){
-				let square = event.target;
+		}
+		function eraseShip(event){
+			let square = $(event.target);
+			for (let i = 0; i < ship.length; i++){
+				square.removeClass(ship.letter);
+				if (horizontal)
+					square = square.next();
+				else {
+					let id = event.target.id;
+					let x = id[1];
+					let y = id[2];
+					square = $('#a'+(parseInt(x)+1+i)+y);
+				}
+			}	   
+		}
+		$('.col').click(function(event){
+			let square = event.target;
 			if (placeShip(parseInt(square.id[1]),parseInt(square.id[2]),ship.length,horizontal,ship.letter)){
-		
-			
 				if (shipsCounter >= 4) {
 					shipsAreSet = true;
 					printPlayerGrid();
 					ship.letter='x'; // hacky fix
+					message = "";
+					$('#message').html(message);
 					playGame();
 				}
 				else {
-						shipsCounter++;
-				ship = ships[shipsCounter];
+					shipsCounter++;
+					ship = ships[shipsCounter];
+				}
 			}
-			}
-	});}
+		});}
 
-	function playGame() {
-	$('#setup').hide();
-	let str=""
-	for (let i = 0; i < 10; i++) {
-		str+='<div class="row">';
-		for (let j = 0; j < 10; j++) {
-			str+='<div class="col col-1" id="g'+i+j+'">'
-			// +playerGuesses[i][j]
+		function playGame() {
+			$('#setup').hide();
+			let str=""
+			for (let i = 0; i < 10; i++) {
+				str+='<div class="row">';
+				for (let j = 0; j < 10; j++) {
+					str+='<div class="col col-1" id="g'+i+j+'">'
 			+'</div>';
 		}
 		str+='</div>';
@@ -389,22 +381,17 @@ $(document).ready(function() {
 		str+='<div class="row">';
 		for (let j = 0; j < 10; j++) {
 			str+='<div class="col col-1 '+playerGrid[i][j]+'" id="s'+i+j+'">'
-			// +playerGrid[i][j]
 			+'</div>';
 		}
 		str+='</div>';
 	}
 	$('#ships').append(str);
 
-
 	$('#guesses').click(function (event) {
-		console.log(this);
-    	console.log(event.target);
-    	console.log(event.target.id[1]);
-    	if (playerGuesses[event.target.id[1]][event.target.id[2]] === "e"){
-	    	let result = playerGuess(event.target.id[1], event.target.id[2]);
-	    	// $(event.target).text(result);
+		if (playerGuesses[event.target.id[1]][event.target.id[2]] === "e"){
+			let result = playerGuess(event.target.id[1], event.target.id[2]);
 	    	$(event.target).addClass(result);
+	    	// Super sophisticated AI
 	    	let compGuessX = Math.floor(Math.random()*10);
 	    	let compGuessY = Math.floor(Math.random()*10);
 	    	while(compGuesses[compGuessX][compGuessY] != "e") {
@@ -416,8 +403,7 @@ $(document).ready(function() {
 	    	$('#message').html(message);
 	    	if (gameOver)
 	    		$('#guesses').off('click');
-
-    	}
+	    }
 	});
 }
 });
