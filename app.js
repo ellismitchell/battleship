@@ -43,30 +43,7 @@ while(!compPlaceShip(Math.floor(Math.random()*10),
 while(!compPlaceShip(Math.floor(Math.random()*10),
 	Math.floor(Math.random()*10),
 	2,Math.random() >= 0.5,'d')) {}
-
-
-
-// compGrid[0][1] = "c";
-// compGrid[0][2] = "c";
-// compGrid[0][3] = "c";
-// compGrid[0][4] = "c";
-// compGrid[0][5] = "c";
-
-// compGrid[3][0] = "b";
-// compGrid[4][0] = "b";
-// compGrid[5][0] = "b";
-// compGrid[6][0] = "b";
-
-// compGrid[3][8] = "k";
-// compGrid[4][8] = "k";
-// compGrid[5][8] = "k";
-
-// compGrid[6][2] = "s";
-// compGrid[6][3] = "s";
-// compGrid[6][4] = "s";
-
-// compGrid[8][8] = "d";
-// compGrid[8][9] = "d";
+ 
 
 printCompGrid();
 
@@ -187,9 +164,43 @@ function compGuess(x,y) {
 		compGuesses[x][y] = "m";
 		return "m"; // miss
 	}
-	else
+	else {
+		if (playerGrid[x][y] === "c"){
+			playerShips.carrier--;
+			if (playerShips.carrier === 0)
+				message += '<br>I sunk your carrier';
+		}
+		else if (playerGrid[x][y] === 'b'){
+			playerShips.battleship--;
+			if (playerShips.battleship === 0)
+				message += '<br>I sunk your battleship';
+		}
+		else if (playerGrid[x][y] === 'k'){
+			playerShips.cruiser--;
+			if (playerShips.cruiser === 0)
+				message += '<br>I sunk your cruiser';
+		}
+		else if (playerGrid[x][y] === 's'){
+			playerShips.submarine--;
+			if (playerShips.submarine === 0)
+				message += '<br>I sunk your submarine';
+		}
+		else if (playerGrid[x][y] === 'd'){
+			playerShips.destroyer--;
+			if (playerShips.destroyer === 0)
+				message += '<br>I sunk your destroyer';
+		}
+		if (playerShips.carrier === 0 &&
+			playerShips.battleship === 0 &&
+			playerShips.cruiser === 0 &&
+			playerShips.submarine === 0 &&
+			playerShips.destroyer === 0) {
+			message += '<br>YOU LOSE!';
+			gameOver = true;
+	}
 		compGuesses[x][y] = "h";
 		return "h"; // hit
+	}
 }
 
 function printPlayerGuesses() {
@@ -277,30 +288,71 @@ $(document).ready(function() {
 		str+='</div>';
 	}
 	$('#setup').append(str);
+	let recentSquare;
+	let recentSquare2;
 	if(!shipsAreSet){
 		$(window).on("keypress",function(event) {
-			if (event.which == 32)
+			if (event.which == 32) {
+				square = recentSquare;
+				for (let i = 0; i < ship.length; i++){
+			square.removeClass(ship.letter);
+			if (horizontal)
+				square = square.next();
+			else {
+				let id = recentSquare2.id;
+				let x = id[1];
+				let y = id[2];
+				square = $('#a'+(parseInt(x)+1+i)+y);
+			}
+		}
 				horizontal = !horizontal;
+				square = recentSquare;
+				for (let i = 0; i < ship.length; i++){
+			square.addClass(ship.letter);
+			if (horizontal)
+				square = square.next();
+			else {
+				let id = recentSquare2.id;
+				let x = id[1];
+				let y = id[2];
+				square = $('#a'+(parseInt(x)+1+i)+y);
+			}
+		} 
+			}
 		});
-	$('.col').hover(function(event){
+	$('.col').hover(paintShip,eraseShip);
+
+	function paintShip(event){
 		let square = $(event.target);
+		recentSquare = square;
+		recentSquare2 = event.target;
 		for (let i = 0; i < ship.length; i++){
 			square.addClass(ship.letter);
 			if (horizontal)
 				square = square.next();
 			else {
-
+				let id = event.target.id;
+				let x = id[1];
+				let y = id[2];
+				square = $('#a'+(parseInt(x)+1+i)+y);
 			}
-		}
+		}    
 
-	},function(event){
+	}
+	function eraseShip(event){
 		let square = $(event.target);
 		for (let i = 0; i < ship.length; i++){
 			square.removeClass(ship.letter);
-			square = square.next();
+			if (horizontal)
+				square = square.next();
+			else {
+				let id = event.target.id;
+				let x = id[1];
+				let y = id[2];
+				square = $('#a'+(parseInt(x)+1+i)+y);
+			}
+		}	   
 	}
-	});
-
 	$('.col').click(function(event){
 				let square = event.target;
 			if (placeShip(parseInt(square.id[1]),parseInt(square.id[2]),ship.length,horizontal,ship.letter)){
@@ -355,9 +407,16 @@ $(document).ready(function() {
 	    	$(event.target).addClass(result);
 	    	let compGuessX = Math.floor(Math.random()*10);
 	    	let compGuessY = Math.floor(Math.random()*10);
+	    	while(compGuesses[compGuessX][compGuessY] != "e") {
+	    		compGuessX = Math.floor(Math.random()*10);
+	    		compGuessY = Math.floor(Math.random()*10);
+	    	}
 	    	result = compGuess(compGuessX,compGuessY);
 	    	$('#s'+compGuessX+compGuessY).addClass(result);
 	    	$('#message').html(message);
+	    	if (gameOver)
+	    		$('#guesses').off('click');
+
     	}
 	});
 }
